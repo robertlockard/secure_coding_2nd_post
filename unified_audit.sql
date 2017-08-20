@@ -11,12 +11,18 @@ declare
   Policy_Does_not_exists exception;
   pragma Exception_Init(Policy_Does_not_exists, -46357);
 begin
+  -- disable audit policies.
   execute immediate 'noaudit policy aud_admin_rol_pol';
   execute immediate 'noaudit policy aud_api_dml_pol';
-  execute immediate 'noaudit policy policy aud_exec_code_pol';
+  execute immediate 'noaudit policy aud_exec_code_pol';
+  execute immediate 'noaudit policy aud_exec_api_pol';
+  execute immediate 'noaudit policy aud_hr_employees';
+  -- drop audit policies
   execute immediate 'drop audit policy aud_admin_rol_pol';
   execute immediate 'drop audit policy aud_api_dml_pol';
-  execute immediate 'drop audit policy policy aud_exec_code_pol';
+  execute immediate 'drop audit policy aud_exec_code_pol';
+  execute immediate 'drop audit policy aud_exec_api_pol';
+  execute immediate 'drop audit policy aud_hr_employees';
 exception when Policy_Does_not_exists then null;
 end;
 /
