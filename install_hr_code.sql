@@ -33,7 +33,6 @@ create or replace PACKAGE BODY  hr_code.pkg_manage_emp AS
   iId  	integer;				-- the primary key that will 
 								-- be returned by the insert proc.
   BEGIN
-
 	-- for demo purposes, build an employee record.
 	-- insert a row into the employees record.
     hr_api.pkg_emp_insert.pInsEmp(pEmp => tEmp, pID => iId);

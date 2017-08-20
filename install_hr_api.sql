@@ -92,7 +92,7 @@ end pkg_emp_select;
 /
 
 create or replace package hr_api.pkg_emp_insert 
-AUTHID CURRENT_USER AS
+AUTHID DEFINER AS
 -- you will notice a couple things about this decoration.
 -- one, we are getting the defination of pEmp from the
 -- hr_decls.decl package and two, using the accessible by

@@ -5,8 +5,8 @@ declare
 begin
 	rEmp.first_name 	:= 'Rob';
 	rEmp.last_name  	:= 'Lockard';
-	rEmp.email			:= 'rob@oraclewizard.com';
-	rEmp.phone_number	:= '+1.571.276.4790';
+	rEmp.email			:= 'rob@mydomain.com';
+	rEmp.phone_number	:= '+1.555.555.5555';
 	rEmp.hire_date		:= trunc(sysdate);
 	rEmp.job_id			:= 'AD_VP';
 	rEmp.salary			:= 999999;
