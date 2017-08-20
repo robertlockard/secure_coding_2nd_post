@@ -26,6 +26,9 @@ roles hr_api_admin_role;
 create audit policy aud_api_dml_pol
 roles hr_emp_select_role;
 
+create audit policy aud_exec_pol
+all on execute hr_code.pkg_manage_emp;
+
 -- we have the policies, now we need to enable them
 -- in this case we are going to audit both success
 -- and failure.

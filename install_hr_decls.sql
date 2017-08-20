@@ -42,7 +42,7 @@ grant execute on hr_decls.decl to hr_code;
 -- code in the hr_code schema, the procedure
 -- being executed requires visibility to the 
 -- t_dep_t subtype.
-grant execute on hr_decels.decl to usr1;
+grant execute on hr_decls.decl to usr1;
 -- i don't think so, we are going to put a 
 -- front end on it; and the user will be going
 -- throught the front end. Now, should I use

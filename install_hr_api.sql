@@ -91,18 +91,23 @@ CREATE OR REPLACE PACKAGE BODY hr_api.pkg_emp_select AS
 end pkg_emp_select;
 /
 
-create or replace package        pkg_emp_insert 
+create or replace package hr_api.pkg_emp_insert 
 AUTHID CURRENT_USER AS
-
-	PROCEDURE pInsEmp(pEmp IN 		hr_decls.decl.t_emp_t,
-					  pId		OUT INTEGER);
+-- you will notice a couple things about this decoration.
+-- one, we are getting the defination of pEmp from the
+-- hr_decls.decl package and two, using the accessible by
+-- clause so hr_code.pkg_manage_emp is whitelisted.
+	PROCEDURE pInsEmp(pEmp IN hr_decls.decl.t_emp_t,
+					  pId	  OUT INTEGER)
+        ACCESSIBLE BY (PACKAGE hr_code.pkg_manage_emp);
 
 END pkg_emp_insert;
+
 /
 
 grant hr_emp_insert_role to package hr_api.pkg_emp_insert;
 
-create or replace PACKAGE BODY        pkg_emp_insert AS
+create or replace PACKAGE BODY  hr_api.pkg_emp_insert AS
     -- this verion of pInsEmp generates the employee_id using
     -- the hr.employees_seq sequence. do we want to build a 
     -- version that the employee_id is passed in the record?
@@ -143,7 +148,8 @@ END pkg_emp_insert;
 
 -- i need a package to manage departments. select departments
 -- into hr_decls.decl.t_depts_t
-create or replace package hr_api.hr_dept_select as
+create or replace package hr_api.hr_dept_select 
+authid current_user as
     FUNCTION fGetDepartments RETURN hr_decls.decl.t_depts_t;
 END hr_dept_select;
 /
