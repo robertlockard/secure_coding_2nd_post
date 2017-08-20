@@ -92,7 +92,7 @@ end pkg_emp_select;
 /
 
 create or replace package hr_api.pkg_emp_insert 
-AUTHID DEFINER AS
+AUTHID CURRENT_USER AS
 -- you will notice a couple things about this decoration.
 -- one, we are getting the defination of pEmp from the
 -- hr_decls.decl package and two, using the accessible by
@@ -102,7 +102,6 @@ AUTHID DEFINER AS
         ACCESSIBLE BY (PACKAGE hr_code.pkg_manage_emp);
 
 END pkg_emp_insert;
-
 /
 
 grant hr_emp_insert_role to package hr_api.pkg_emp_insert;
@@ -118,7 +117,8 @@ create or replace PACKAGE BODY  hr_api.pkg_emp_insert AS
     -- acces to anything in the hr schema.
 
 	PROCEDURE pInsEmp(pEmp IN 		hr_decls.decl.t_emp_t,
-					  pId		OUT INTEGER) IS
+					  pId		OUT INTEGER) 
+    ACCESSIBLE BY (PACKAGE hr_code.pkg_manage_emp) IS
     -- generate the primary key for the employee
 	begin
 		SELECT hr.employees_seq.nextval

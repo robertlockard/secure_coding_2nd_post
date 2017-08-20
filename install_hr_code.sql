@@ -16,26 +16,24 @@ set role hr_code_admin_role identified by x;
 
 
 CREATE OR REPLACE PACKAGE hr_code.pkg_manage_emp 
-AUTHID CURRENT_USER AS
--- this procedure will be called from an anonymous block
--- from the users account. Therefore that account will 
--- need execute privs on the hr_decls.decl package.
+AUTHID current_user AS
+
   PROCEDURE pInsEmp(pEmp IN hr_decls.decl.t_emp_t);
 
-END pkg_manage_emp;
+END PKG_MANAGE_EMP;
 /
 
 create or replace PACKAGE BODY  hr_code.pkg_manage_emp AS
 
   PROCEDURE pInsEmp(pEmp IN hr_decls.decl.t_emp_t) AS
-  tEmp 	hr_decls.decl.t_emp_t; 	-- the employees record
-  tDept hr_decls.decl.t_dep_t; 	-- the departments record
   iId  	integer;				-- the primary key that will 
 								-- be returned by the insert proc.
   BEGIN
-	-- for demo purposes, build an employee record.
+	-- for demo purposes, usr1 builds an employee
+    -- record and calls pInsEmp.
 	-- insert a row into the employees record.
-    hr_api.pkg_emp_insert.pInsEmp(pEmp => tEmp, pID => iId);
+    -- do all the business logic then do the insert.
+    hr_api.pkg_emp_insert.pInsEmp(pEmp => pEmp, pID => iId);
 	-- print the employee id.
 	sys.dbms_output.put_line('employee id = ' || to_char(iId));
   END pInsEmp;
