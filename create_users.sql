@@ -17,6 +17,7 @@ begin
   Drop_User('hr_api');
   Drop_User('hr_code');
   Drop_User('usr1');
+  Drop_User('security');
 end;
 /
 
@@ -42,10 +43,26 @@ end;
 -- done cleaning up.
 
 -- create all the users.
+-- decls is used to define types that 
+-- will be used across all schemas.
 create user hr_decls identified by x;
+-- this is my executing user.
 create user usr1 identified by x;
+-- hr_code is going to be used for
+-- application logic. The users will
+-- access the application through the 
+-- hr_code schema.
 create user hr_code identified by x;
-create user hr_api identified by x; -- this is going to be my api schema that will have access to the hr objects.
+-- this is going to be my api schema that will have 
+-- access to the hr objects.
+create user hr_api identified by x; 
+-- the security instance will be used to 
+-- control vpd and redaction policies.
+-- TODO define the roles the security
+-- schema will require.
+create user security identified by x;	
+--
+--
 -- create all the roles
 create role hr_decls_admin_role identified by x;
 -- role needed to create packages
@@ -60,12 +77,26 @@ create role hr_backup_role;
 -- the hr_api_admin_role has create procedure privilege.
 -- 1.0 made api_admin_role password protected.
 create role hr_api_admin_role identified by x;
+-- role will be used for inserting into the 
+-- hr.employees table.
 create role hr_emp_insert_role;
+-- role will be used to select from
+-- the hr.departments table.
 create role hr_dept_select_role;
+-- role will be used to select from
+-- the hr.locations table.
 create role hr_loc_select_role;
 -- create roles that are used to execute apis
+-- role will be granted to the hr_code schema
+-- code can select execute the code to select
+-- data from the hr.employees table.
 create role exec_hr_emp_api_sel_role;
+-- role will be granted to the hr_code schema
+-- so code can insert into the employees table.
 create role exec_hr_emp_api_ins_role;
+-- role will be grnted to the hr_code schema
+-- so the code can select from the departments
+-- schema.
 create role exec_hr_dep_api_sel_role;
 
 -- now do the grants.
@@ -190,8 +221,17 @@ alter user hr_api
 -- schema that holds the business logic.
 grant 
 	exec_hr_emp_api_sel_role,
-	exec_hr_dep_api_sel_role
+	exec_hr_dep_api_sel_role,
+	exec_hr_emp_api_ins_role
 to hr_code;
+
+-- we need some execute roles for the users
+create role exec_hr_emp_code_role;
+-- give the role to the user that will be
+-- executing the code.
+grant 
+	exec_hr_emp_code_role
+to usr1;
 
 conn sys/oracle@orcl as sysdba
 grant select on sys.v_$instance to hr_decls;

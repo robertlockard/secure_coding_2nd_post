@@ -91,26 +91,35 @@ CREATE OR REPLACE PACKAGE BODY hr_api.pkg_emp_select AS
 end pkg_emp_select;
 /
 
-create or replace package hr_api.pkg_emp_insert 
-authid current_user AS
+create or replace package        pkg_emp_insert 
+AUTHID CURRENT_USER AS
+
 	PROCEDURE pInsEmp(pEmp IN 		hr_decls.decl.t_emp_t,
 					  pId		OUT INTEGER);
+
 END pkg_emp_insert;
 /
 
 grant hr_emp_insert_role to package hr_api.pkg_emp_insert;
 
-CREATE OR REPLACE PACKAGE BODY hr_api.pkg_emp_insert AS
+create or replace PACKAGE BODY        pkg_emp_insert AS
     -- this verion of pInsEmp generates the employee_id using
     -- the hr.employees_seq sequence. do we want to build a 
     -- version that the employee_id is passed in the record?
+    -- if we do that, then we will have to grant access to 
+    -- the hr.employees_seq sequence to hr_code. Not sure
+    -- we want to do that in this instance. The point of the
+    -- demo is to not allow the hr_code or the users direct
+    -- acces to anything in the hr schema.
+
 	PROCEDURE pInsEmp(pEmp IN 		hr_decls.decl.t_emp_t,
 					  pId		OUT INTEGER) IS
+    -- generate the primary key for the employee
 	begin
 		SELECT hr.employees_seq.nextval
 		INTO pId
 		FROM DUAL;
-		
+        -- insert the row into the hr.employees table.
 		INSERT into hr.employees values (
 			pId,
 			pEmp.first_name,
@@ -126,7 +135,7 @@ CREATE OR REPLACE PACKAGE BODY hr_api.pkg_emp_insert AS
 			pEmp.ssn);
 	EXCEPTION WHEN OTHERS THEN 
 		-- this is going to change to use the errors handeler.
-		RAISE_APPLICATION_ERROR(-20000,'error inserting into hr.employees ' || sqlerrm);
+		RAISE_APPLICATION_ERROR(-20000,'error inserting into hr.employees ' || sqlcode || ' ' || sqlerrm);
 	END pInsEmp;
 END pkg_emp_insert;
 /
